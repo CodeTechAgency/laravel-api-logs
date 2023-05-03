@@ -1,0 +1,39 @@
+{
+  "name": "codetech/laravel-api-logs",
+  "description": "A lightweight Laravel package for logging requests made to your API.",
+  "keywords": [
+    "codetech",
+    "laravel-api-logs",
+    "api",
+    "logs",
+    "laravel",
+    "laravel-package"
+  ],
+  "authors": [
+    {
+      "name": "José Osório",
+      "email": "jfrosorio@gmail.com",
+      "role": "Developer"
+    }
+  ],
+  "license": "MIT",
+  "require": {
+    "php": "^7.2|^8.0",
+    "illuminate/database": "^7.0|^8.0|^9.0|^10.0",
+    "illuminate/support": "^7.0|^8.0|^9.0|^10.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "CodeTech\\ApiLogs\\": "src/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "extra": {
+    "laravel": {
+      "providers": [
+        "CodeTech\\ApiLogs\\Providers\\ApiLogServiceProvider"
+      ]
+    }
+  }
+}
