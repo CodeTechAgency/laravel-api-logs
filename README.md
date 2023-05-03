@@ -45,6 +45,9 @@ php artisan migrate
 To start logging requests made to your API, you simply add the middleware to the API's route middleware group, located in your `app/Http/Kernel.php`:
 
 ```
+use CodeTech\ApiLogs\Http\Middleware\LogApiRequest;
+
+
 protected $middlewareGroups = [
     ...
 
