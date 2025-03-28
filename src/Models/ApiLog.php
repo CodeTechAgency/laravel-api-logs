@@ -16,6 +16,7 @@ class ApiLog extends Model
         'method',
         'ip',
         'request_data',
+        'request_headers',
         'response_data',
         'user_id',
     ];
@@ -25,6 +26,7 @@ class ApiLog extends Model
      */
     protected $casts = [
         'request_data' => 'json',
+        'request_headers' => 'json',
         'response_data' => 'json',
         'created_at' => 'datetime:d/m/Y H:i',
         'updated_at' => 'datetime:d/m/Y H:i',
