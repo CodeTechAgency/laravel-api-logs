@@ -20,8 +20,8 @@ class CreateApiLogsTable extends Migration
             $table->string('method');
             $table->ipAddress('ip');
             $table->json('request_data');
-            $table->json('response_data')->nullable();
-            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->json('response_data');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }
