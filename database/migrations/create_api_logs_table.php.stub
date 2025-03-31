@@ -22,7 +22,7 @@ class CreateApiLogsTable extends Migration
             $table->json('request_data');
             $table->json('request_headers');
             $table->json('response_data');
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->morphs('causer', 'causer');
             $table->timestamps();
         });
     }
