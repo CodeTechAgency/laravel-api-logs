@@ -2,7 +2,6 @@
 
 namespace CodeTech\ApiLogs\Models;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class ApiLog extends Model
@@ -18,7 +17,6 @@ class ApiLog extends Model
         'request_data',
         'request_headers',
         'response_data',
-        'user_id',
     ];
 
     /**
@@ -32,13 +30,9 @@ class ApiLog extends Model
         'updated_at' => 'datetime:d/m/Y H:i',
     ];
 
-    /**
-     * Get the user that owns this session log.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user()
+
+    public function causer()
     {
-        return $this->belongsTo(User::class);
+        return $this->morphTo();
     }
 }

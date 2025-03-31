@@ -3,7 +3,6 @@
 namespace CodeTech\ApiLogs\Http\Middleware;
 
 use Closure;
-use CodeTech\ApiLogs\Models\ApiLog;
 use Illuminate\Http\Request;
 
 class LogApiRequest
@@ -33,7 +32,7 @@ class LogApiRequest
     {
         $request->end = microtime(true);
 
-        $data = [
+        auth()->user()->apiLogs()->create([
             'duration' => $request->end - $request->start,
             'url' => $request->fullUrl(),
             'method' => $request->getMethod(),
@@ -41,9 +40,6 @@ class LogApiRequest
             'request_data' => $request->all(),
             'request_headers' => $request->headers->all(),
             'response_data' => json_decode($response->getContent()),
-            'user_id' => auth()->id(),
-        ];
-
-        ApiLog::create($data);
+        ]);
     }
 }
