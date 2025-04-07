@@ -16,6 +16,10 @@ class LogApiRequest
      */
     public function handle(Request $request, Closure $next)
     {
+        if (! auth()->check()) {
+            return;
+        }
+
         $request->start = microtime(true);
 
         return $next($request);
@@ -30,6 +34,10 @@ class LogApiRequest
      */
     public function terminate(Request $request, $response): void
     {
+        if (! auth()->check()) {
+            return;
+        }
+
         $request->end = microtime(true);
 
         auth()->user()->apiLogs()->create([
