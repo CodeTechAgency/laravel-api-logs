@@ -45,13 +45,13 @@ return Application::configure(basePath: dirname(__DIR__))
 
 ### Request timing is no longer stored in dynamic properties
 
-The middleware previously wrote `$request->start` and `$request->end` directly on the `Request` object (a dynamic property, deprecated since PHP 8.2). The start time now lives in the request attribute bag:
+The middleware wrote `$request->start` and `$request->end` directly on the `Request` object until 2.0 (a dynamic property, deprecated since PHP 8.2); since 2.1 and in 3.x the start time lives in the request attribute bag:
 
 ```php
 $request->attributes->get('api_logs.start');
 ```
 
-If your code read `$request->start` or `$request->end`, update it accordingly (`end` has no replacement — it was only ever the log's write time; use the `duration` column of the log instead).
+If your code read `$request->start` or `$request->end`, update it accordingly (`end` has no replacement — it was only ever the log's write time; use the `duration` column of the log instead). Upgrading from 2.1 or later, nothing changes here.
 
 ### Stricter middleware signatures
 
@@ -59,7 +59,7 @@ If your code read `$request->start` or `$request->end`, update it accordingly (`
 
 ### Users without the `HasApiLogs` trait are skipped
 
-`terminate()` now verifies that the authenticated model actually has an `apiLogs()` method before logging. In 2.x an authenticated model without the trait caused a fatal error; in 3.x the request is silently not logged. Make sure your user model uses the trait if you expect its requests to be logged:
+`terminate()` verifies that the authenticated model actually has an `apiLogs()` method before logging. In 2.0.x an authenticated model without the trait caused a fatal error; since 2.1 and in 3.x the request is silently not logged. Make sure your user model uses the trait if you expect its requests to be logged:
 
 ```php
 use CodeTech\ApiLogs\Traits\HasApiLogs;
