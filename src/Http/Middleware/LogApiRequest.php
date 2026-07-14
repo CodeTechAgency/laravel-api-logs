@@ -50,7 +50,7 @@ class LogApiRequest
             'method' => $request->getMethod(),
             'ip' => $request->getClientIp(),
             'request_data' => Redactor::redact($request->all(), $keys, $replacement),
-            'request_headers' => Redactor::redact($request->headers->all(), $headers, $replacement),
+            'request_headers' => Redactor::redactHeaders($request->headers->all(), $headers, $replacement),
             'response_data' => is_array($responseData) ? Redactor::redact($responseData, $keys, $replacement) : $responseData,
         ]);
     }

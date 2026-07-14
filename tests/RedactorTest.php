@@ -43,13 +43,38 @@ class RedactorTest extends TestCase
     public function test_replaces_array_values_entirely(): void
     {
         $result = Redactor::redact(
-            ['cookie' => ['session=1', 'other=2'], 'accept' => ['application/json']],
+            ['credit_card' => ['number' => '4111', 'cvv' => '123'], 'items' => [1, 2]],
+            ['credit_card'],
+            '[REDACTED]'
+        );
+
+        $this->assertSame('[REDACTED]', $result['credit_card']);
+        $this->assertSame([1, 2], $result['items']);
+    }
+
+    public function test_redact_headers_preserves_value_shape(): void
+    {
+        $result = Redactor::redactHeaders(
+            ['Cookie' => ['session=1', 'other=2'], 'accept' => ['application/json']],
             ['cookie'],
             '[REDACTED]'
         );
 
-        $this->assertSame('[REDACTED]', $result['cookie']);
+        $this->assertSame(['[REDACTED]'], $result['Cookie']);
         $this->assertSame(['application/json'], $result['accept']);
+    }
+
+    public function test_handles_non_string_keys(): void
+    {
+        $result = Redactor::redact(
+            ['password' => 'secret', 0 => 'zero', 1 => ['token' => 'abc']],
+            ['password', 123, 'token'],
+            '[REDACTED]'
+        );
+
+        $this->assertSame('[REDACTED]', $result['password']);
+        $this->assertSame('zero', $result[0]);
+        $this->assertSame('[REDACTED]', $result[1]['token']);
     }
 
     public function test_leaves_data_untouched_when_nothing_matches(): void

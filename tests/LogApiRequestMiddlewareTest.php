@@ -67,7 +67,7 @@ class LogApiRequestMiddlewareTest extends TestCase
         $this->assertSame('[REDACTED]', $log->request_data['meta']['refresh_token']);
         $this->assertSame('user@example.com', $log->request_data['email']);
 
-        $this->assertSame('[REDACTED]', $log->request_headers['authorization']);
+        $this->assertSame(['[REDACTED]'], $log->request_headers['authorization']);
         $this->assertArrayHasKey('host', $log->request_headers);
 
         $this->assertSame('[REDACTED]', $log->response_data['access_token']);
