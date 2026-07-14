@@ -1,0 +1,15 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - src
+
+    level: 5
+
+    ignoreErrors:
+        # Package traits are consumed by userland models, not by the
+        # package itself, so they are never "used" from PHPStan's view.
+        -
+            identifier: trait.unused
+            path: src/Traits/HasApiLogs.php

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class ApiLog extends Model
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $fillable = [
         'duration',
