@@ -2,7 +2,7 @@
 
 ## Upgrading from 2.0 to 2.1
 
-No changes are required — `composer update` is enough. Be aware of one behavioral change:
+No changes are required — `composer update` is enough. Be aware of these behavioral changes:
 
 ### Sensitive fields are now redacted by default
 
@@ -18,6 +18,20 @@ Two further notes:
 
 - Rows logged **before** 2.1.0 remain unredacted — if your `api_logs` table may contain credentials, consider purging or cleaning the historical data.
 - `response_data` is now decoded associatively before storage; reads through the `ApiLog` model are unchanged (the `json` cast already returned arrays).
+
+### Request timing is no longer stored in dynamic properties
+
+The middleware previously wrote `$request->start` and `$request->end` directly on the `Request` object — a dynamic property, deprecated since PHP 8.2 (which the 2.x line supports through Laravel 10). The start time now lives in the request attribute bag:
+
+```php
+$request->attributes->get('api_logs.start');
+```
+
+If your code read `$request->start` or `$request->end`, update it accordingly (`end` has no replacement — use the `duration` column of the log instead).
+
+### Users without the `HasApiLogs` trait are skipped
+
+`terminate()` now verifies that the authenticated model has an `apiLogs()` method before logging. Previously such a model caused a fatal error; since 2.1.0 the request is simply not logged. Make sure your user model uses the trait if you expect its requests to be logged.
 
 ## Upgrading from 2.x to 3.0
 
@@ -53,32 +67,17 @@ return Application::configure(basePath: dirname(__DIR__))
     ->create();
 ```
 
-### Request timing is no longer stored in dynamic properties
+### Request timing dynamic properties (already changed in 2.1)
 
-The middleware previously wrote `$request->start` and `$request->end` directly on the `Request` object (a dynamic property, deprecated since PHP 8.2). The start time now lives in the request attribute bag:
-
-```php
-$request->attributes->get('api_logs.start');
-```
-
-If your code read `$request->start` or `$request->end`, update it accordingly (`end` has no replacement — it was only ever the log's write time; use the `duration` column of the log instead).
+Since 2.1.0 the middleware no longer writes `$request->start` / `$request->end` dynamic properties (see the 2.0 → 2.1 notes above); 3.x behaves identically. Upgrading from 2.0.x directly, apply the 2.1 note.
 
 ### Stricter middleware signatures
 
 `handle()` now declares a `Symfony\Component\HttpFoundation\Response` return type and `terminate()` type-hints its `$response` parameter. If you extended `LogApiRequest`, update your overrides to match.
 
-### Users without the `HasApiLogs` trait are skipped
+### Users without the `HasApiLogs` trait are skipped (already changed in 2.1)
 
-`terminate()` now verifies that the authenticated model actually has an `apiLogs()` method before logging. In 2.x an authenticated model without the trait caused a fatal error; in 3.x the request is silently not logged. Make sure your user model uses the trait if you expect its requests to be logged:
-
-```php
-use CodeTech\ApiLogs\Traits\HasApiLogs;
-
-class User extends Authenticatable
-{
-    use HasApiLogs;
-}
-```
+Since 2.1.0 an authenticated model without the `HasApiLogs` trait no longer causes a fatal error — the request is simply not logged (see the 2.0 → 2.1 notes above); 3.x behaves identically.
 
 ### `ApiLog` casts moved to the `casts()` method
 

@@ -18,7 +18,7 @@ class LogApiRequest
      */
     public function handle(Request $request, Closure $next)
     {
-        $request->start = microtime(true);
+        $request->attributes->set('api_logs.start', microtime(true));
 
         return $next($request);
     }
@@ -32,11 +32,15 @@ class LogApiRequest
      */
     public function terminate(Request $request, $response): void
     {
-        if (! auth()->check()) {
+        $user = auth()->user();
+
+        if ($user === null || ! method_exists($user, 'apiLogs')) {
             return;
         }
 
-        $request->end = microtime(true);
+        $start = $request->attributes->get('api_logs.start')
+            ?? $request->server('REQUEST_TIME_FLOAT')
+            ?? microtime(true);
 
         $content = $response->getContent();
         $responseData = is_string($content) ? json_decode($content, true) : null;
@@ -47,8 +51,8 @@ class LogApiRequest
 
         $query = Redactor::redact($request->query(), $keys, $replacement);
 
-        auth()->user()->apiLogs()->create([
-            'duration' => $request->end - $request->start,
+        $user->apiLogs()->create([
+            'duration' => microtime(true) - $start,
             'url' => $query === [] ? $request->url() : $request->url().'?'.Arr::query($query),
             'method' => $request->getMethod(),
             'ip' => $request->getClientIp(),
