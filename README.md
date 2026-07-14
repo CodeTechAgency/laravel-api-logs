@@ -3,9 +3,9 @@
 A lightweight Laravel package for logging requests made to your API.
 
 [![Latest version](https://img.shields.io/github/release/CodeTechAgency/laravel-api-logs?style=flat-square)](https://github.com/CodeTechAgency/laravel-api-logs/releases)
-[![GitHub license](https://img.shields.io/github/license/CodeTechAgency/laravel-api-logs?style=flat-square)](https://github.com/CodeTechAgency/laravel-api-logs/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/CodeTechAgency/laravel-api-logs?style=flat-square)](https://github.com/CodeTechAgency/laravel-api-logs/blob/v2/LICENSE)
 
-> **You are viewing the docs for the 2.x line** (Laravel 7–10). The latest version is 3.x (Laravel 11–13) on the [`main`](https://github.com/CodeTechAgency/laravel-api-logs/tree/main) branch — see the [upgrade guide](UPGRADE.md).
+> **You are viewing the docs for the 2.x line** (Laravel 7–10). The latest version is 3.x (Laravel 11–13) on the [`main`](https://github.com/CodeTechAgency/laravel-api-logs/tree/main) branch — see the [upgrade guide](https://github.com/CodeTechAgency/laravel-api-logs/blob/v2/UPGRADE.md).
 
 ## Requirements
 
@@ -92,7 +92,7 @@ composer test
 
 ## License
 
-**codetech/laravel-api-logs** is open-sourced software licensed under the [MIT license](https://github.com/CodeTechAgency/laravel-api-logs/blob/master/LICENSE).
+**codetech/laravel-api-logs** is open-sourced software licensed under the [MIT license](https://github.com/CodeTechAgency/laravel-api-logs/blob/v2/LICENSE).
 
 
 ## About CodeTech
