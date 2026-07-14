@@ -11,7 +11,7 @@ class ApiLogServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->mergeConfigFrom(__DIR__.'/../../config/api-logs.php', 'api-logs');
     }
 
     /**
@@ -32,5 +32,9 @@ class ApiLogServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../../database/migrations/create_api_logs_table.php.stub' => database_path($databasePath),
         ], 'migrations');
+
+        $this->publishes([
+            __DIR__.'/../../config/api-logs.php' => config_path('api-logs.php'),
+        ], 'config');
     }
 }

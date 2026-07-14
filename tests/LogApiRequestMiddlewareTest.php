@@ -13,6 +13,10 @@ class LogApiRequestMiddlewareTest extends TestCase
         $router->middleware(LogApiRequest::class)->group(function () use ($router) {
             $router->get('/api/ping', fn () => response()->json(['pong' => true]));
             $router->post('/api/echo', fn () => response()->json(['ok' => true]));
+            $router->post('/api/login', fn () => response()->json([
+                'user' => ['email' => 'user@example.com'],
+                'access_token' => 'issued-token',
+            ]));
         });
     }
 
@@ -39,6 +43,59 @@ class LogApiRequestMiddlewareTest extends TestCase
         $this->assertSame(['ok' => true], (array) $log->response_data);
         $this->assertArrayHasKey('host', $log->request_headers);
         $this->assertTrue($log->causer->is($user));
+    }
+
+    public function test_sensitive_fields_are_redacted(): void
+    {
+        $user = User::create([
+            'name' => 'Test User',
+            'email' => 'user@example.com',
+            'password' => 'secret',
+        ]);
+
+        $this->actingAs($user)
+            ->postJson('/api/login?api_token=query-token', [
+                'email' => 'user@example.com',
+                'password' => 'super-secret',
+                'meta' => ['refresh_token' => 'nested-token'],
+            ], ['Authorization' => 'Bearer abc123'])
+            ->assertOk();
+
+        $log = ApiLog::first();
+
+        $this->assertSame('[REDACTED]', $log->request_data['password']);
+        $this->assertSame('[REDACTED]', $log->request_data['meta']['refresh_token']);
+        $this->assertSame('user@example.com', $log->request_data['email']);
+
+        $this->assertSame(['[REDACTED]'], $log->request_headers['authorization']);
+        $this->assertArrayHasKey('host', $log->request_headers);
+
+        $this->assertSame('[REDACTED]', $log->response_data['access_token']);
+        $this->assertSame('user@example.com', $log->response_data['user']['email']);
+
+        $this->assertStringContainsString('api_token='.urlencode('[REDACTED]'), $log->url);
+        $this->assertStringNotContainsString('query-token', $log->url);
+    }
+
+    public function test_redaction_lists_are_configurable(): void
+    {
+        config()->set('api-logs.redact.keys', ['ssn']);
+        config()->set('api-logs.redact.replacement', '***');
+
+        $user = User::create([
+            'name' => 'Test User',
+            'email' => 'user@example.com',
+            'password' => 'secret',
+        ]);
+
+        $this->actingAs($user)
+            ->postJson('/api/echo', ['ssn' => '123-45-6789', 'password' => 'kept-now'])
+            ->assertOk();
+
+        $log = ApiLog::first();
+
+        $this->assertSame('***', $log->request_data['ssn']);
+        $this->assertSame('kept-now', $log->request_data['password']);
     }
 
     public function test_unauthenticated_request_passes_through_and_is_not_logged(): void

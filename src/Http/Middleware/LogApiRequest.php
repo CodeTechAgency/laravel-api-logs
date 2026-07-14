@@ -3,7 +3,9 @@
 namespace CodeTech\ApiLogs\Http\Middleware;
 
 use Closure;
+use CodeTech\ApiLogs\Support\Redactor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Symfony\Component\HttpFoundation\Response;
 
 class LogApiRequest
@@ -34,15 +36,22 @@ class LogApiRequest
             ?? microtime(true);
 
         $content = $response->getContent();
+        $responseData = is_string($content) ? json_decode($content, true) : null;
+
+        $keys = config('api-logs.redact.keys', []);
+        $headers = config('api-logs.redact.headers', []);
+        $replacement = config('api-logs.redact.replacement', '[REDACTED]');
+
+        $query = Redactor::redact($request->query(), $keys, $replacement);
 
         $user->apiLogs()->create([
             'duration' => microtime(true) - $start,
-            'url' => $request->fullUrl(),
+            'url' => $query === [] ? $request->url() : $request->url().'?'.Arr::query($query),
             'method' => $request->getMethod(),
             'ip' => $request->getClientIp(),
-            'request_data' => $request->all(),
-            'request_headers' => $request->headers->all(),
-            'response_data' => is_string($content) ? json_decode($content) : null,
+            'request_data' => Redactor::redact($request->all(), $keys, $replacement),
+            'request_headers' => Redactor::redactHeaders($request->headers->all(), $headers, $replacement),
+            'response_data' => is_array($responseData) ? Redactor::redact($responseData, $keys, $replacement) : $responseData,
         ]);
     }
 }
