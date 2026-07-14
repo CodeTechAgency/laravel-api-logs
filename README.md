@@ -9,11 +9,11 @@ A lightweight Laravel package for logging requests made to your API.
 
 ## Requirements
 
-| Package version | Laravel      | PHP   | Status |
-|-----------------|--------------|-------|--------|
-| 3.x ([`main`](https://github.com/CodeTechAgency/laravel-api-logs/tree/main)) | 11 / 12 / 13 | ≥ 8.2 | Active |
-| 2.x ([`v2`](https://github.com/CodeTechAgency/laravel-api-logs/tree/v2)) | 7 – 10 | ≥ 7.2 | Security fixes |
-| 1.x (this branch) | 7 – 10 | ≥ 7.2 | End of life |
+| Package version                                                              | Laravel      | PHP   | Status         |
+|------------------------------------------------------------------------------|--------------|-------|----------------|
+| 3.x ([`main`](https://github.com/CodeTechAgency/laravel-api-logs/tree/main)) | 11 / 12 / 13 | ≥ 8.2 | Active         |
+| 2.x ([`v2`](https://github.com/CodeTechAgency/laravel-api-logs/tree/v2))     | 7 – 10       | ≥ 7.2 | Security fixes |
+| 1.x (this branch)                                                            | 7 – 10       | ≥ 7.2 | End of life    |
 
 ## Installation
 
