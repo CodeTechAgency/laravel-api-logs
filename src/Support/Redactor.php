@@ -10,7 +10,7 @@ class Redactor
      */
     public static function redact(array $data, array $keys, string $replacement): array
     {
-        return static::apply($data, static::lookup($keys), $replacement);
+        return self::apply($data, self::lookup($keys), $replacement);
     }
 
     /**
@@ -19,7 +19,7 @@ class Redactor
      */
     public static function redactHeaders(array $headers, array $names, string $replacement): array
     {
-        $lookup = static::lookup($names);
+        $lookup = self::lookup($names);
 
         foreach ($headers as $name => $values) {
             if (isset($lookup[strtolower((string) $name)])) {
@@ -36,7 +36,7 @@ class Redactor
             if (isset($lookup[strtolower((string) $key)])) {
                 $data[$key] = $replacement;
             } elseif (is_array($value)) {
-                $data[$key] = static::apply($value, $lookup, $replacement);
+                $data[$key] = self::apply($value, $lookup, $replacement);
             }
         }
 
