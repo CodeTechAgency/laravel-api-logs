@@ -3,7 +3,17 @@
 A lightweight Laravel package for logging requests made to your API.
 
 [![Latest version](https://img.shields.io/github/release/CodeTechAgency/laravel-api-logs?style=flat-square)](https://github.com/CodeTechAgency/laravel-api-logs/releases)
-[![GitHub license](https://img.shields.io/github/license/CodeTechAgency/laravel-api-logs?style=flat-square)](https://github.com/CodeTechAgency/laravel-api-logs/blob/master/LICENSE)
+[![Tests](https://img.shields.io/github/actions/workflow/status/CodeTechAgency/laravel-api-logs/tests.yml?style=flat-square&label=tests)](https://github.com/CodeTechAgency/laravel-api-logs/actions/workflows/tests.yml)
+[![GitHub license](https://img.shields.io/github/license/CodeTechAgency/laravel-api-logs?style=flat-square)](https://github.com/CodeTechAgency/laravel-api-logs/blob/main/LICENSE)
+
+## Requirements
+
+| Package version | Laravel    | PHP  |
+|-----------------|------------|------|
+| 3.x             | 11 / 12 / 13 | ≥ 8.2 |
+| 2.x             | 7 – 10     | ≥ 7.2 |
+
+Upgrading from 2.x? See the [upgrade guide](UPGRADE.md).
 
 ## Installation
 
@@ -13,19 +23,7 @@ Add the package to your Laravel application using composer:
 composer require codetech/laravel-api-logs
 ```
 
-
-### Service Provider
-
-The service provider will be automatically registered during the installation process. However, you can manually register it by adding it to the list of providers located in your `config/app.php` file:
-
-```
-'providers' => [
-    ...
-    Codetech\ApiLogs\Providers\ApiLogServiceProvider::class,
-
-],
-```
-
+The service provider is registered automatically via package discovery.
 
 ### Migrations
 
@@ -36,36 +34,57 @@ php artisan vendor:publish --provider=CodeTech\\ApiLogs\\Providers\\ApiLogServic
 ```
 
 Run the migration:
+
 ```
 php artisan migrate
 ```
 
 ## Usage
 
-To start logging requests made to your API, you simply add the middleware to the API's route middleware group, located in your `app/Http/Kernel.php`:
+Add the `HasApiLogs` trait to the model that makes the requests (typically your `User` model):
 
+```php
+use CodeTech\ApiLogs\Traits\HasApiLogs;
+
+class User extends Authenticatable
+{
+    use HasApiLogs;
+}
 ```
+
+To start logging requests made to your API, append the middleware to the `api` middleware group in your `bootstrap/app.php`:
+
+```php
 use CodeTech\ApiLogs\Http\Middleware\LogApiRequest;
+use Illuminate\Foundation\Configuration\Middleware;
 
-
-protected $middlewareGroups = [
-    ...
-
-    'api' => [
-        ...
-        LogApiRequest::class,
-    ],
-];
+return Application::configure(basePath: dirname(__DIR__))
+    // ...
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->appendToGroup('api', LogApiRequest::class);
+    })
+    // ...
+    ->create();
 ```
 
+Only authenticated requests are logged. Each log stores the URL, HTTP method, client IP, request data, request headers, response data and the request duration, and is linked to the authenticated user through a polymorphic `causer` relation:
+
+```php
+$user->apiLogs; // all ApiLog entries for the user
+$apiLog->causer; // the model that made the request
+```
+
+## Testing
+
+```
+composer test
+```
 
 ---
 
-
 ## License
 
-**codetech/laravel-api-logs** is open-sourced software licensed under the [MIT license](https://github.com/CodeTechAgency/laravel-api-logs/blob/master/LICENSE).
-
+**codetech/laravel-api-logs** is open-sourced software licensed under the [MIT license](https://github.com/CodeTechAgency/laravel-api-logs/blob/main/LICENSE).
 
 ## About CodeTech
 
