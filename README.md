@@ -3,7 +3,7 @@
 A lightweight Laravel package for logging requests made to your API.
 
 [![Latest version](https://img.shields.io/github/release/CodeTechAgency/laravel-api-logs?style=flat-square)](https://github.com/CodeTechAgency/laravel-api-logs/releases)
-[![GitHub license](https://img.shields.io/github/license/CodeTechAgency/laravel-api-logs?style=flat-square)](https://github.com/CodeTechAgency/laravel-api-logs/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/CodeTechAgency/laravel-api-logs?style=flat-square)](https://github.com/CodeTechAgency/laravel-api-logs/blob/v1/LICENSE)
 
 > **⚠️ You are viewing the docs for 1.x, which is end-of-life** and receives no further updates — including security fixes such as the sensitive-field redaction added in 2.1.0 (without it, passwords and tokens are stored verbatim in your database). Upgrading to 2.x is a small change — see the [upgrade guide](https://github.com/CodeTechAgency/laravel-api-logs/blob/v1/UPGRADE.md). The latest version is 3.x (Laravel 11–13) on the [`main`](https://github.com/CodeTechAgency/laravel-api-logs/tree/main) branch.
 
@@ -74,7 +74,7 @@ protected $middlewareGroups = [
 
 ## License
 
-**codetech/laravel-api-logs** is open-sourced software licensed under the [MIT license](https://github.com/CodeTechAgency/laravel-api-logs/blob/master/LICENSE).
+**codetech/laravel-api-logs** is open-sourced software licensed under the [MIT license](https://github.com/CodeTechAgency/laravel-api-logs/blob/v1/LICENSE).
 
 
 ## About CodeTech
