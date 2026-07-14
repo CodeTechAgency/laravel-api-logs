@@ -15,22 +15,25 @@ Update your `composer.json`:
 The `api_logs` table no longer has a `user_id` foreign key; logs are linked to the model that made the request through a polymorphic relation. Migrate your existing table:
 
 ```php
+// 1. Drop the FK and add the new (nullable) type column
 Schema::table('api_logs', function (Blueprint $table) {
     $table->dropForeign(['user_id']);
+    $table->string('causer_type')->nullable()->after('user_id');
 });
 
+// 2. Backfill the type with your user model's class name
 DB::table('api_logs')->update([
-    'causer_type' => \App\Models\User::class, // set before renaming, see below
+    'causer_type' => \App\Models\User::class,
 ]);
 
+// 3. Rename the id column and add the morph index
 Schema::table('api_logs', function (Blueprint $table) {
     $table->renameColumn('user_id', 'causer_id');
-    $table->string('causer_type')->after('causer_id');
     $table->index(['causer_type', 'causer_id'], 'causer');
 });
 ```
 
-(Adjust order/steps to your database driver: add the `causer_type` column first, backfill it with your user model's class name, then rename `user_id` to `causer_id` and add the index. New installs can simply publish and run the 2.x migration.)
+Notes: `causer_type` is created nullable so the backfill can run; you may tighten it to `NOT NULL` afterwards if you wish (on Laravel ≤ 10, column changes require the `doctrine/dbal` package). Fresh installs can skip all of this and simply publish and run the 2.x migration.
 
 ### Add the `HasApiLogs` trait to your user model
 
