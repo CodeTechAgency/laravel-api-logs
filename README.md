@@ -31,7 +31,7 @@ The service provider will be automatically registered during the installation pr
 ```
 'providers' => [
     ...
-    Codetech\ApiLogs\Providers\ApiLogServiceProvider::class,
+    CodeTech\ApiLogs\Providers\ApiLogServiceProvider::class,
 
 ],
 ```
