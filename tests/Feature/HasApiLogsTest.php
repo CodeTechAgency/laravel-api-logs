@@ -1,9 +1,10 @@
 <?php
 
-namespace CodeTech\ApiLogs\Tests;
+namespace CodeTech\ApiLogs\Tests\Feature;
 
 use CodeTech\ApiLogs\Models\ApiLog;
 use CodeTech\ApiLogs\Tests\Fixtures\User;
+use CodeTech\ApiLogs\Tests\TestCase;
 
 class HasApiLogsTest extends TestCase
 {
