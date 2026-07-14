@@ -1,5 +1,24 @@
 # Upgrade Guide
 
+## Upgrading from 2.0 to 2.1
+
+No changes are required — `composer update` is enough. Be aware of one behavioral change:
+
+### Sensitive fields are now redacted by default
+
+Since 2.1.0, credential-type fields in the request data, query string and response data (`password`, `token`, `access_token`, `secret`, `cvv`, …) and sensitive request headers (`Authorization`, `Cookie`, `X-Api-Key`, …) are stored as `[REDACTED]` instead of their real values. If you inspect stored payloads for debugging, expect to see redacted values for those keys.
+
+To customize which fields are redacted — or to restore the previous verbatim behavior by emptying the lists — publish the config file and edit `config/api-logs.php`:
+
+```
+php artisan vendor:publish --provider=CodeTech\\ApiLogs\\Providers\\ApiLogServiceProvider --tag=config
+```
+
+Two further notes:
+
+- Rows logged **before** 2.1.0 remain unredacted — if your `api_logs` table may contain credentials, consider purging or cleaning the historical data.
+- `response_data` is now decoded associatively before storage; reads through the `ApiLog` model are unchanged (the `json` cast already returned arrays).
+
 ## Upgrading from 2.x to 3.0
 
 ### New requirements
