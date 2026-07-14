@@ -1,5 +1,14 @@
 # Upgrade Guide
 
+## Upgrading from 1.x to 2.0
+
+2.x supports the same Laravel (7–10) and PHP (≥ 7.2) versions as 1.x — the upgrade is a small schema and model change, and the 2.x line receives security fixes (e.g. sensitive-field redaction in 2.1.0) that 1.x does not.
+
+- **`user_id` FK → polymorphic `causer`**: add a `causer_type` column, backfill it with your user model's class name, rename `user_id` to `causer_id`, and index `['causer_type', 'causer_id']`. New installs simply publish and run the 2.x migration.
+- **Add the `HasApiLogs` trait** to your user model; read logs via `$user->apiLogs` / `$apiLog->causer` instead of `ApiLog::where('user_id', …)`.
+
+The full guide with migration snippets lives on the [`v1` branch](https://github.com/CodeTechAgency/laravel-api-logs/blob/v1/UPGRADE.md).
+
 ## Upgrading from 2.x to 3.0
 
 ### New requirements
@@ -15,7 +24,7 @@ Update your `composer.json`:
 "codetech/laravel-api-logs": "^3.0"
 ```
 
-If your application is still on Laravel 10 or older, stay on `^2.0` — v2.0.2 is the latest 2.x release.
+If your application is still on Laravel 10 or older, stay on `^2.0` — the 2.x line (on the [`v2` branch](https://github.com/CodeTechAgency/laravel-api-logs/tree/v2)) keeps receiving security fixes.
 
 ### Middleware registration has moved
 
