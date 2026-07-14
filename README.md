@@ -1,8 +1,11 @@
+![Laravel API Logs](https://raw.githubusercontent.com/CodeTechAgency/laravel-api-logs/main/art/banner.png)
+
 # Laravel API Requests Logger
 
 A lightweight Laravel package for logging requests made to your API.
 
 [![Latest version](https://img.shields.io/github/release/CodeTechAgency/laravel-api-logs?style=flat-square)](https://github.com/CodeTechAgency/laravel-api-logs/releases)
+[![Total downloads](https://img.shields.io/packagist/dt/codetech/laravel-api-logs?style=flat-square)](https://packagist.org/packages/codetech/laravel-api-logs)
 [![Tests](https://img.shields.io/github/actions/workflow/status/CodeTechAgency/laravel-api-logs/tests.yml?style=flat-square&label=tests)](https://github.com/CodeTechAgency/laravel-api-logs/actions/workflows/tests.yml)
 [![GitHub license](https://img.shields.io/github/license/CodeTechAgency/laravel-api-logs?style=flat-square)](https://github.com/CodeTechAgency/laravel-api-logs/blob/main/LICENSE)
 
@@ -14,7 +17,7 @@ A lightweight Laravel package for logging requests made to your API.
 | 2.x ([`v2`](https://github.com/CodeTechAgency/laravel-api-logs/tree/v2)) | 7 – 10 | ≥ 7.2 | Security fixes |
 | 1.x ([`v1`](https://github.com/CodeTechAgency/laravel-api-logs/tree/v1)) | 7 – 10 | ≥ 7.2 | End of life |
 
-Upgrading from an older version? See the [upgrade guide](UPGRADE.md).
+Upgrading from an older version? See the [upgrade guide](https://github.com/CodeTechAgency/laravel-api-logs/blob/main/UPGRADE.md).
 
 ## Installation
 
@@ -101,9 +104,19 @@ return [
 
 ## Testing
 
+The test suite is split into `Unit` and `Feature` suites. Run everything with:
+
 ```
 composer test
 ```
+
+## Changelog
+
+Every release is documented on the [GitHub releases page](https://github.com/CodeTechAgency/laravel-api-logs/releases).
+
+## Support
+
+If this package helps you, consider [starring the repository](https://github.com/CodeTechAgency/laravel-api-logs) — it helps other developers discover it.
 
 ---
 

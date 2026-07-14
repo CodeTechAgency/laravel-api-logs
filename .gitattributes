@@ -5,6 +5,7 @@
 *.json text eol=lf
 *.yml text eol=lf
 
+/art export-ignore
 /tests export-ignore
 /.github export-ignore
 /phpunit.xml export-ignore
