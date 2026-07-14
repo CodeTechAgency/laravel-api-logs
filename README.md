@@ -31,7 +31,7 @@ The service provider will be automatically registered during the installation pr
 ```
 'providers' => [
     ...
-    Codetech\ApiLogs\Providers\ApiLogServiceProvider::class,
+    CodeTech\ApiLogs\Providers\ApiLogServiceProvider::class,
 
 ],
 ```
@@ -42,7 +42,7 @@ The service provider will be automatically registered during the installation pr
 Publish the migration file:
 
 ```
-php artisan vendor:publish --provider=CodeTech\\ApiLogs\\Providers\\ApiLogServiceProvider --tag=migrations
+php artisan vendor:publish --provider="CodeTech\ApiLogs\Providers\ApiLogServiceProvider" --tag=migrations
 ```
 
 Run the migration:
