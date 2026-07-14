@@ -13,6 +13,8 @@ A lightweight Laravel package for logging requests made to your API.
 | 3.x             | 11 / 12 / 13 | ≥ 8.2 |
 | 2.x             | 7 – 10     | ≥ 7.2 |
 
+Upgrading from 2.x? See the [upgrade guide](UPGRADE.md).
+
 ## Installation
 
 Add the package to your Laravel application using composer:
