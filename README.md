@@ -102,17 +102,27 @@ return [
 
 `keys` are matched case-insensitively and recursively against the request payload, query string and response data; `headers` are matched against request header names.
 
-## Testing
+## Testing & code quality
 
-The test suite is split into `Unit` and `Feature` suites. Run everything with:
+The test suite is split into `Unit` and `Feature` suites. Run the tests, static analysis and code-style checks via Composer:
 
-```
-composer test
+```bash
+composer test      # PHPUnit test suite
+composer analyse   # PHPStan/Larastan static analysis
+composer lint      # Pint code-style check (run `composer format` to fix)
 ```
 
 ## Changelog
 
 Every release is documented on the [GitHub releases page](https://github.com/CodeTechAgency/laravel-api-logs/releases).
+
+## Contributing
+
+Contributions are welcome! Please read the [contributing guidelines](https://github.com/CodeTechAgency/laravel-api-logs/blob/main/CONTRIBUTING.md) before opening an issue or pull request.
+
+## Security
+
+If you discover a security vulnerability, please follow the [security policy](https://github.com/CodeTechAgency/laravel-api-logs/blob/main/SECURITY.md) — do not report it publicly.
 
 ## Support
 
