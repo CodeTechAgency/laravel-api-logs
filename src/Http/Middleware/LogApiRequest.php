@@ -16,9 +16,7 @@ class LogApiRequest
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->check()) {
-            $request->start = microtime(true);
-        }
+        $request->start = microtime(true);
 
         return $next($request);
     }
