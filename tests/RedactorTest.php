@@ -3,9 +3,9 @@
 namespace CodeTech\ApiLogs\Tests;
 
 use CodeTech\ApiLogs\Support\Redactor;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 
-class RedactorTest extends TestCase
+class RedactorTest extends PHPUnitTestCase
 {
     public function test_redacts_matching_keys_recursively(): void
     {
