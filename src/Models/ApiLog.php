@@ -3,6 +3,7 @@
 namespace CodeTech\ApiLogs\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class ApiLog extends Model
 {
@@ -20,18 +21,22 @@ class ApiLog extends Model
     ];
 
     /**
-     * @inheritdoc
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
      */
-    protected $casts = [
-        'request_data' => 'json',
-        'request_headers' => 'json',
-        'response_data' => 'json',
-        'created_at' => 'datetime:d/m/Y H:i',
-        'updated_at' => 'datetime:d/m/Y H:i',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'request_data' => 'json',
+            'request_headers' => 'json',
+            'response_data' => 'json',
+            'created_at' => 'datetime:d/m/Y H:i',
+            'updated_at' => 'datetime:d/m/Y H:i',
+        ];
+    }
 
-
-    public function causer()
+    public function causer(): MorphTo
     {
         return $this->morphTo();
     }

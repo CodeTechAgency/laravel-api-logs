@@ -8,20 +8,16 @@ class ApiLogServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->setPublishableFiles();
     }
@@ -29,12 +25,12 @@ class ApiLogServiceProvider extends ServiceProvider
     /**
      * Sets the publishable files.
      */
-    private function setPublishableFiles()
+    private function setPublishableFiles(): void
     {
-        $databasePath = sprintf('migrations/%s_create_api_logs_table.php', date('Y_m_d_His', time()));
+        $databasePath = sprintf('migrations/%s_create_api_logs_table.php', date('Y_m_d_His'));
 
         $this->publishes([
-            __DIR__.'/../../database/migrations/create_api_logs_table.php.stub' => database_path($databasePath)
+            __DIR__.'/../../database/migrations/create_api_logs_table.php.stub' => database_path($databasePath),
         ], 'migrations');
     }
 }

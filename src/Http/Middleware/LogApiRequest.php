@@ -4,46 +4,45 @@ namespace CodeTech\ApiLogs\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class LogApiRequest
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  Request  $request
-     * @param  Closure  $next
-     * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
-        $request->start = microtime(true);
+        $request->attributes->set('api_logs.start', microtime(true));
 
         return $next($request);
     }
 
     /**
      * Handle tasks after the response has been sent to the browser.
-     *
-     * @param  Request  $request
-     * @param $response
-     * @return void
      */
-    public function terminate(Request $request, $response): void
+    public function terminate(Request $request, Response $response): void
     {
-        if (! auth()->check()) {
+        $user = auth()->user();
+
+        if ($user === null || ! method_exists($user, 'apiLogs')) {
             return;
         }
 
-        $request->end = microtime(true);
+        $start = $request->attributes->get('api_logs.start')
+            ?? $request->server('REQUEST_TIME_FLOAT')
+            ?? microtime(true);
 
-        auth()->user()->apiLogs()->create([
-            'duration' => $request->end - $request->start,
+        $content = $response->getContent();
+
+        $user->apiLogs()->create([
+            'duration' => microtime(true) - $start,
             'url' => $request->fullUrl(),
             'method' => $request->getMethod(),
             'ip' => $request->getClientIp(),
             'request_data' => $request->all(),
             'request_headers' => $request->headers->all(),
-            'response_data' => json_decode($response->getContent()),
+            'response_data' => is_string($content) ? json_decode($content) : null,
         ]);
     }
 }
