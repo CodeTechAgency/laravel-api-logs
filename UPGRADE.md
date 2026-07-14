@@ -93,7 +93,7 @@ Since 3.1.0, credential-type fields in the request data, query string and respon
 To customize which fields are redacted — or to restore the previous verbatim behavior by emptying the lists — publish the config file and edit `config/api-logs.php`:
 
 ```
-php artisan vendor:publish --provider=CodeTech\\ApiLogs\\Providers\\ApiLogServiceProvider --tag=config
+php artisan vendor:publish --provider="CodeTech\ApiLogs\Providers\ApiLogServiceProvider" --tag=config
 ```
 
 Two further notes:

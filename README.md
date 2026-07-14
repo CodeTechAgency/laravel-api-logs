@@ -31,7 +31,7 @@ The service provider is registered automatically via package discovery.
 Publish the migration file:
 
 ```
-php artisan vendor:publish --provider=CodeTech\\ApiLogs\\Providers\\ApiLogServiceProvider --tag=migrations
+php artisan vendor:publish --provider="CodeTech\ApiLogs\Providers\ApiLogServiceProvider" --tag=migrations
 ```
 
 Run the migration:
@@ -82,7 +82,7 @@ Sensitive values are **redacted by default** before a log is stored: common cred
 To customize the redaction lists or the replacement string, publish the config file:
 
 ```
-php artisan vendor:publish --provider=CodeTech\\ApiLogs\\Providers\\ApiLogServiceProvider --tag=config
+php artisan vendor:publish --provider="CodeTech\ApiLogs\Providers\ApiLogServiceProvider" --tag=config
 ```
 
 Then adjust `config/api-logs.php`:
