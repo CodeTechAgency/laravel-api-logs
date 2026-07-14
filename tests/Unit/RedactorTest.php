@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeTech\ApiLogs\Tests;
+namespace CodeTech\ApiLogs\Tests\Unit;
 
 use CodeTech\ApiLogs\Support\Redactor;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
