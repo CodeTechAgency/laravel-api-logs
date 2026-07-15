@@ -99,6 +99,49 @@ class LogApiRequestMiddlewareTest extends TestCase
         $this->assertSame('kept-now', $log->request_data['password']);
     }
 
+    public function test_configured_guard_is_used_to_resolve_the_user(): void
+    {
+        $this->defineApiGuard();
+        config()->set('api-logs.guard', 'api');
+
+        $user = User::create([
+            'name' => 'Test User',
+            'email' => 'user@example.com',
+            'password' => 'secret',
+        ]);
+
+        $this->actingAs($user, 'api')
+            ->postJson('/api/echo', ['name' => 'value'])
+            ->assertOk();
+
+        $this->assertSame(1, ApiLog::count());
+        $this->assertTrue(ApiLog::first()->causer->is($user));
+    }
+
+    public function test_request_is_not_logged_when_configured_guard_is_unauthenticated(): void
+    {
+        $this->defineApiGuard();
+        config()->set('api-logs.guard', 'api');
+
+        $user = User::create([
+            'name' => 'Test User',
+            'email' => 'user@example.com',
+            'password' => 'secret',
+        ]);
+
+        $this->actingAs($user, 'web')
+            ->postJson('/api/echo', ['name' => 'value'])
+            ->assertOk();
+
+        $this->assertSame(0, ApiLog::count());
+    }
+
+    private function defineApiGuard(): void
+    {
+        config()->set('auth.guards.api', ['driver' => 'session', 'provider' => 'users']);
+        config()->set('auth.providers.users', ['driver' => 'eloquent', 'model' => User::class]);
+    }
+
     public function test_unauthenticated_request_passes_through_and_is_not_logged(): void
     {
         $this->getJson('/api/ping')

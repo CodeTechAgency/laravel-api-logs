@@ -4,6 +4,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Authentication Guard
+    |--------------------------------------------------------------------------
+    |
+    | The authentication guard used to resolve the user a logged request is
+    | attributed to. When null, the request's default guard is used (the one
+    | set by the auth middleware, or the application's default guard).
+    |
+    */
+
+    'guard' => null,
+
+    /*
+    |--------------------------------------------------------------------------
     | Redaction
     |--------------------------------------------------------------------------
     |

@@ -25,7 +25,7 @@ class LogApiRequest
      */
     public function terminate(Request $request, Response $response): void
     {
-        $user = auth()->user();
+        $user = auth()->guard(config('api-logs.guard'))->user();
 
         if ($user === null || ! method_exists($user, 'apiLogs')) {
             return;
