@@ -82,7 +82,7 @@ $apiLog->causer; // the model that made the request
 
 Sensitive values are **redacted by default** before a log is stored: common credential fields (`password`, `token`, `access_token`, …) in the request data, query string and response data, and sensitive request headers (`Authorization`, `Cookie`, `X-Api-Key`, …) are replaced with `[REDACTED]`.
 
-To customize the redaction lists or the replacement string, publish the config file:
+To customize the authentication guard, the redaction lists or the replacement string, publish the config file:
 
 ```
 php artisan vendor:publish --provider="CodeTech\ApiLogs\Providers\ApiLogServiceProvider" --tag=config
@@ -92,6 +92,8 @@ Then adjust `config/api-logs.php`:
 
 ```php
 return [
+    'guard' => null,
+
     'redact' => [
         'replacement' => '[REDACTED]',
         'keys' => ['password', 'access_token' /* , ... */],
@@ -99,6 +101,8 @@ return [
     ],
 ];
 ```
+
+`guard` pins the authentication guard used to resolve the user a logged request is attributed to (e.g. `'sanctum'`). When `null`, the request's default guard is used — the one set by the `auth` middleware, or the application's default guard.
 
 `keys` are matched case-insensitively and recursively against the request payload, query string and response data; `headers` are matched against request header names.
 
