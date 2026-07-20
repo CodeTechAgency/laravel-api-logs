@@ -21,6 +21,7 @@ middleware group in your `bootstrap/app.php`:
 
 ```php
 use CodeTech\ApiLogs\Http\Middleware\LogApiRequest;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
