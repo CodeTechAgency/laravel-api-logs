@@ -2,61 +2,25 @@
 
 # Laravel API Requests Logger
 
-A lightweight Laravel package for logging requests made to your API.
-
 [![Latest version](https://img.shields.io/github/release/CodeTechAgency/laravel-api-logs?style=flat-square)](https://github.com/CodeTechAgency/laravel-api-logs/releases)
 [![Total downloads](https://img.shields.io/packagist/dt/codetech/laravel-api-logs?style=flat-square)](https://packagist.org/packages/codetech/laravel-api-logs)
 [![Tests](https://img.shields.io/github/actions/workflow/status/CodeTechAgency/laravel-api-logs/tests.yml?style=flat-square&label=tests)](https://github.com/CodeTechAgency/laravel-api-logs/actions/workflows/tests.yml)
 [![GitHub license](https://img.shields.io/github/license/CodeTechAgency/laravel-api-logs?style=flat-square)](https://github.com/CodeTechAgency/laravel-api-logs/blob/main/LICENSE)
 
-## Requirements
+A lightweight Laravel package for logging the requests made to your API. Each
+authenticated request is stored with its URL, method, IP, payload, headers, response,
+and duration — linked to the user that made it, with sensitive values redacted before
+anything hits the database.
 
-| Package version                                                          | Laravel      | PHP   | Status         |
-|--------------------------------------------------------------------------|--------------|-------|----------------|
-| 3.x (this branch)                                                        | 11 / 12 / 13 | ≥ 8.2 | Active         |
-| 2.x ([`v2`](https://github.com/CodeTechAgency/laravel-api-logs/tree/v2)) | 7 – 10       | ≥ 7.2 | Security fixes |
-| 1.x ([`v1`](https://github.com/CodeTechAgency/laravel-api-logs/tree/v1)) | 7 – 10       | ≥ 7.2 | End of life    |
+## Quick start
 
-Upgrading from an older version? See the [upgrade guide](https://github.com/CodeTechAgency/laravel-api-logs/blob/main/UPGRADE.md).
-
-## Installation
-
-Add the package to your Laravel application using composer:
-
-```
+```bash
 composer require codetech/laravel-api-logs
-```
-
-The service provider is registered automatically via package discovery.
-
-### Migrations
-
-Publish the migration file:
-
-```
 php artisan vendor:publish --provider="CodeTech\ApiLogs\Providers\ApiLogServiceProvider" --tag=migrations
-```
-
-Run the migration:
-
-```
 php artisan migrate
 ```
 
-## Usage
-
-Add the `HasApiLogs` trait to the model that makes the requests (typically your `User` model):
-
-```php
-use CodeTech\ApiLogs\Traits\HasApiLogs;
-
-class User extends Authenticatable
-{
-    use HasApiLogs;
-}
-```
-
-To start logging requests made to your API, append the middleware to the `api` middleware group in your `bootstrap/app.php`:
+Append the middleware to the `api` middleware group in your `bootstrap/app.php`:
 
 ```php
 use CodeTech\ApiLogs\Http\Middleware\LogApiRequest;
@@ -71,50 +35,25 @@ return Application::configure(basePath: dirname(__DIR__))
     ->create();
 ```
 
-Only authenticated requests are logged. Each log stores the URL, HTTP method, client IP, request data, request headers, response data and the request duration, and is linked to the authenticated user through a polymorphic `causer` relation:
+Add the `HasApiLogs` trait to the model that makes the requests to browse its history:
 
 ```php
+use CodeTech\ApiLogs\Traits\HasApiLogs;
+
+class User extends Authenticatable
+{
+    use HasApiLogs;
+}
+
 $user->apiLogs; // all ApiLog entries for the user
-$apiLog->causer; // the model that made the request
 ```
 
-## Configuration
+## Documentation
 
-Sensitive values are **redacted by default** before a log is stored: common credential fields (`password`, `token`, `access_token`, …) in the request data, query string and response data, and sensitive request headers (`Authorization`, `Cookie`, `X-Api-Key`, …) are replaced with `[REDACTED]`.
+To learn all about the package — configuration, guards, redaction — head over to
+[the extensive documentation](https://www.codetech.pt/open-source/laravel-api-logs).
 
-To customize the authentication guard, the redaction lists or the replacement string, publish the config file:
-
-```
-php artisan vendor:publish --provider="CodeTech\ApiLogs\Providers\ApiLogServiceProvider" --tag=config
-```
-
-Then adjust `config/api-logs.php`:
-
-```php
-return [
-    'guard' => null,
-
-    'redact' => [
-        'replacement' => '[REDACTED]',
-        'keys' => ['password', 'access_token' /* , ... */],
-        'headers' => ['authorization', 'cookie' /* , ... */],
-    ],
-];
-```
-
-`guard` pins the authentication guard used to resolve the user a logged request is attributed to (e.g. `'sanctum'`). When `null`, the request's default guard is used — the one set by the `auth` middleware, or the application's default guard.
-
-`keys` are matched case-insensitively and recursively against the request payload, query string and response data; `headers` are matched against request header names.
-
-## Testing & code quality
-
-The test suite is split into `Unit` and `Feature` suites. Run the tests, static analysis and code-style checks via Composer:
-
-```bash
-composer test      # PHPUnit test suite
-composer analyse   # PHPStan/Larastan static analysis
-composer lint      # Pint code-style check (run `composer format` to fix)
-```
+Upgrading from an older version? See the [upgrade guide](https://github.com/CodeTechAgency/laravel-api-logs/blob/main/UPGRADE.md).
 
 ## Changelog
 
@@ -130,13 +69,15 @@ If you discover a security vulnerability, please follow the [security policy](ht
 
 ## Support
 
-If this package helps you, consider [starring the repository](https://github.com/CodeTechAgency/laravel-api-logs) — it helps other developers discover it.
+If this package helps you, consider [starring the repository](https://github.com/CodeTechAgency/laravel-api-logs) —
+it helps other developers discover it.
 
 ---
 
 ## License
 
-**codetech/laravel-api-logs** is open-sourced software licensed under the [MIT license](https://github.com/CodeTechAgency/laravel-api-logs/blob/main/LICENSE).
+**codetech/laravel-api-logs** is open-sourced software licensed under
+the [MIT license](https://github.com/CodeTechAgency/laravel-api-logs/blob/main/LICENSE).
 
 ## About CodeTech
 
