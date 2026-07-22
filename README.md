@@ -24,7 +24,7 @@ Publish the migrations:
 php artisan vendor:publish --provider="CodeTech\ApiLogs\Providers\ApiLogServiceProvider" --tag=migrations
 ```
 
-Run them:
+Run the migrations:
 
 ```bash
 php artisan migrate
