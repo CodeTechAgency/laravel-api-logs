@@ -12,10 +12,15 @@ composer require codetech/laravel-api-logs
 
 The service provider is registered automatically via package discovery.
 
-Publish and run the migrations:
+Publish the migrations:
 
 ```bash
 php artisan vendor:publish --provider="CodeTech\ApiLogs\Providers\ApiLogServiceProvider" --tag=migrations
+```
+
+Run them:
+
+```bash
 php artisan migrate
 ```
 
