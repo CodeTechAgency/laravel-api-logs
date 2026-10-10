@@ -68,6 +68,24 @@ abstract class TestCase extends Orchestra
                     'access_token' => 'issued-token',
                 ]);
             });
+
+            Route::get('/api/forbidden', function () {
+                abort(403);
+            });
+
+            Route::delete('/api/items', function () {
+                return response()->noContent();
+            });
+
+            Route::get('/api/export', function () {
+                return response()->stream(function () {
+                    echo 'a,b,c';
+                });
+            });
+
+            Route::get('/api/binary', function () {
+                return response("abc\xff");
+            });
         });
     }
 }
