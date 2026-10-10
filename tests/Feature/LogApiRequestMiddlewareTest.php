@@ -100,6 +100,45 @@ class LogApiRequestMiddlewareTest extends TestCase
         $this->assertSame(0, ApiLog::count());
     }
 
+    public function test_html_response_is_logged_with_its_raw_body(): void
+    {
+        $this->actingAs($this->createUser())
+            ->get('/api/forbidden', ['Accept' => '*/*'])
+            ->assertForbidden();
+
+        $log = ApiLog::first();
+
+        $this->assertIsString($log->response_data);
+        $this->assertStringContainsString('<html', $log->response_data);
+    }
+
+    public function test_empty_response_is_logged_with_an_empty_body(): void
+    {
+        $this->actingAs($this->createUser())
+            ->delete('/api/items')
+            ->assertNoContent();
+
+        $this->assertSame('', ApiLog::first()->response_data);
+    }
+
+    public function test_streamed_response_is_logged_with_an_empty_body(): void
+    {
+        $this->actingAs($this->createUser())
+            ->get('/api/export')
+            ->assertOk();
+
+        $this->assertSame('', ApiLog::first()->response_data);
+    }
+
+    public function test_response_that_is_not_valid_utf8_is_logged_with_its_body_scrubbed(): void
+    {
+        $this->actingAs($this->createUser())
+            ->get('/api/binary')
+            ->assertOk();
+
+        $this->assertSame('abc?', ApiLog::first()->response_data);
+    }
+
     private function createUser(): User
     {
         return User::create([

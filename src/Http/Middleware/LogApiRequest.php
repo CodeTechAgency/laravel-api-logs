@@ -42,9 +42,6 @@ class LogApiRequest
             ?? $request->server('REQUEST_TIME_FLOAT')
             ?? microtime(true);
 
-        $content = $response->getContent();
-        $responseData = is_string($content) ? json_decode($content, true) : null;
-
         $keys = config('api-logs.redact.keys', []);
         $headers = config('api-logs.redact.headers', []);
         $replacement = config('api-logs.redact.replacement', '[REDACTED]');
@@ -58,7 +55,33 @@ class LogApiRequest
             'ip' => $request->getClientIp(),
             'request_data' => Redactor::redact($request->all(), $keys, $replacement),
             'request_headers' => Redactor::redactHeaders($request->headers->all(), $headers, $replacement),
-            'response_data' => is_array($responseData) ? Redactor::redact($responseData, $keys, $replacement) : $responseData,
+            'response_data' => $this->responseData($response, $keys, $replacement),
         ]);
+    }
+
+    /**
+     * Get the response body to store: the decoded JSON value when the body
+     * is JSON, or the raw body as a UTF-8 string otherwise.
+     *
+     * @param  \Symfony\Component\HttpFoundation\Response  $response
+     * @param  array  $keys
+     * @param  string  $replacement
+     * @return mixed
+     */
+    private function responseData($response, array $keys, string $replacement)
+    {
+        $content = $response->getContent();
+
+        if (! is_string($content)) {
+            return '';
+        }
+
+        $decoded = json_decode($content, true);
+
+        if (is_array($decoded)) {
+            return Redactor::redact($decoded, $keys, $replacement);
+        }
+
+        return $decoded ?? mb_scrub($content, 'UTF-8');
     }
 }
