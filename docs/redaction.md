@@ -22,3 +22,6 @@ file](configuration.md) and adjust the `redact` options in `config/api-logs.php`
 
 `keys` are matched case-insensitively and recursively against the request payload,
 query string and response data; `headers` are matched against request header names.
+
+Key redaction applies to JSON responses only. A response that is not JSON, such as an
+HTML error page, is stored as its raw body, unredacted.
