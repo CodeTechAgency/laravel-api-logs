@@ -18,6 +18,10 @@ class LogApiRequestMiddlewareTest extends TestCase
                 'user' => ['email' => 'user@example.com'],
                 'access_token' => 'issued-token',
             ]));
+            $router->get('/api/forbidden', fn () => abort(403));
+            $router->delete('/api/items', fn () => response()->noContent());
+            $router->get('/api/export', fn () => response()->stream(fn () => print 'a,b,c'));
+            $router->get('/api/binary', fn () => response("abc\xff"));
         });
     }
 
@@ -134,6 +138,54 @@ class LogApiRequestMiddlewareTest extends TestCase
             ->assertOk();
 
         $this->assertSame(0, ApiLog::count());
+    }
+
+    public function test_html_response_is_logged_with_its_raw_body(): void
+    {
+        $this->actingAs($this->createUser())
+            ->get('/api/forbidden', ['Accept' => '*/*'])
+            ->assertForbidden();
+
+        $log = ApiLog::first();
+
+        $this->assertIsString($log->response_data);
+        $this->assertStringContainsString('<html', $log->response_data);
+    }
+
+    public function test_empty_response_is_logged_with_an_empty_body(): void
+    {
+        $this->actingAs($this->createUser())
+            ->delete('/api/items')
+            ->assertNoContent();
+
+        $this->assertSame('', ApiLog::first()->response_data);
+    }
+
+    public function test_streamed_response_is_logged_with_an_empty_body(): void
+    {
+        $this->actingAs($this->createUser())
+            ->get('/api/export')
+            ->assertOk();
+
+        $this->assertSame('', ApiLog::first()->response_data);
+    }
+
+    public function test_response_that_is_not_valid_utf8_is_logged_with_its_body_scrubbed(): void
+    {
+        $this->actingAs($this->createUser())
+            ->get('/api/binary')
+            ->assertOk();
+
+        $this->assertSame('abc?', ApiLog::first()->response_data);
+    }
+
+    private function createUser(): User
+    {
+        return User::create([
+            'name' => 'Test User',
+            'email' => 'user@example.com',
+            'password' => 'secret',
+        ]);
     }
 
     private function defineApiGuard(): void
