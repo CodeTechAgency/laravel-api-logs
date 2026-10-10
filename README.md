@@ -81,6 +81,8 @@ php artisan vendor:publish --provider=CodeTech\\ApiLogs\\Providers\\ApiLogServic
 
 Then adjust `config/api-logs.php`. `keys` are matched case-insensitively and recursively against the request payload, query string and response data; `headers` are matched against request header names.
 
+Key redaction applies to JSON responses only. A response that is not JSON, such as an HTML error page, is stored as its raw body, unredacted.
+
 ## Testing
 
 ```
